@@ -75,7 +75,7 @@ const WishlistDetail = ({ user, token, socket }) => {
 
   const fetchWishlist = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/wishlists/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/wishlists/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -98,7 +98,7 @@ const WishlistDetail = ({ user, token, socket }) => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/wishlists/${id}/categories`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/wishlists/${id}/categories`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -160,7 +160,7 @@ const WishlistDetail = ({ user, token, socket }) => {
     setError('');
 
     try {
-      const response = await fetch(`http://localhost:5000/api/wishlists/${id}/products`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/wishlists/${id}/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -192,7 +192,7 @@ const WishlistDetail = ({ user, token, socket }) => {
 
   const handleUpdateProduct = async (productId, updatedData) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/wishlists/${id}/products/${productId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/wishlists/${id}/products/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -215,7 +215,7 @@ const WishlistDetail = ({ user, token, socket }) => {
 
   const handleDeleteProduct = async (productId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/wishlists/${id}/products/${productId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/wishlists/${id}/products/${productId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -314,7 +314,7 @@ const WishlistDetail = ({ user, token, socket }) => {
     e.preventDefault();
     setError('');
     try {
-      const response = await fetch(`http://localhost:5000/api/wishlists/${id}/invite`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/wishlists/${id}/invite`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -338,7 +338,7 @@ const WishlistDetail = ({ user, token, socket }) => {
 
   const handleAddComment = async (productId, commentText) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/wishlists/${id}/products/${productId}/comments`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/wishlists/${id}/products/${productId}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -362,7 +362,7 @@ const WishlistDetail = ({ user, token, socket }) => {
 
   const handleDeleteComment = async (productId, commentId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/wishlists/${id}/products/${productId}/comments/${commentId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/wishlists/${id}/products/${productId}/comments/${commentId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -383,7 +383,7 @@ const WishlistDetail = ({ user, token, socket }) => {
 
   const handleAddReaction = async (productId, emoji) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/wishlists/${id}/products/${productId}/reactions`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/wishlists/${id}/products/${productId}/reactions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -406,7 +406,7 @@ const WishlistDetail = ({ user, token, socket }) => {
 
   const handleRemoveReaction = async (productId, emoji) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/wishlists/${id}/products/${productId}/reactions/${encodeURIComponent(emoji)}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/wishlists/${id}/products/${productId}/reactions/${encodeURIComponent(emoji)}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -428,7 +428,7 @@ const WishlistDetail = ({ user, token, socket }) => {
   // Fetch all users for invite autocomplete
   const fetchAllUsers = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/users', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {

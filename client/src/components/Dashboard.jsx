@@ -58,7 +58,7 @@ const Dashboard = ({ user, token, socket }) => {
 
   const fetchWishlists = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/wishlists', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/wishlists`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -81,7 +81,7 @@ const Dashboard = ({ user, token, socket }) => {
   const fetchInvitations = async () => {
     setInvLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/invitations', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invitations`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -106,7 +106,7 @@ const Dashboard = ({ user, token, socket }) => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/wishlists', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/wishlists`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,7 +131,7 @@ const Dashboard = ({ user, token, socket }) => {
 
   const handleDeleteWishlist = async (wishlistId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/wishlists/${wishlistId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/wishlists/${wishlistId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -181,7 +181,7 @@ const Dashboard = ({ user, token, socket }) => {
   const handleAcceptInvitation = async (invitationId) => {
     setInvActionLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/invitations/${invitationId}/accept`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invitations/${invitationId}/accept`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -203,7 +203,7 @@ const Dashboard = ({ user, token, socket }) => {
   const handleDeclineInvitation = async (invitationId) => {
     setInvActionLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/invitations/${invitationId}/decline`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/invitations/${invitationId}/decline`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });

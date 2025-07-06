@@ -53,7 +53,7 @@ const Templates = ({ user, token }) => {
 
   const fetchTemplates = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/templates', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/templates`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -77,7 +77,7 @@ const Templates = ({ user, token }) => {
     e.preventDefault();
     
     try {
-      const response = await fetch('http://localhost:5000/api/templates', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/templates`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ const Templates = ({ user, token }) => {
     e.preventDefault();
     
     try {
-      const response = await fetch(`http://localhost:5000/api/templates/${selectedTemplate._id}/use`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/templates/${selectedTemplate._id}/use`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ const Templates = ({ user, token }) => {
 
   const handleDeleteTemplate = async (templateId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/templates/${templateId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/templates/${templateId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

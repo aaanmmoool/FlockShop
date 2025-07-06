@@ -17,7 +17,7 @@ function App() {
   useEffect(() => {
     // Initialize socket connection
     if (token) {
-      const newSocket = io('http://localhost:5000');
+      const newSocket = io(import.meta.env.VITE_API_URL);
       setSocket(newSocket);
 
       return () => newSocket.close();
@@ -27,7 +27,7 @@ function App() {
   useEffect(() => {
     // Check if user is authenticated
     if (token) {
-      fetch('http://localhost:5000/api/auth/me', {
+      fetch(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
