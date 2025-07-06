@@ -93,19 +93,4 @@ A collaborative product wishlist application where multiple users can create, ma
 ### Invitations
 - `POST /api/wishlists/:id/invite` - Invite user to wishlist
 
-## Assumptions and Limitations
 
-- Authentication is implemented with JWT tokens
-- Email invitations are mocked (no actual emails sent)
-- Real-time updates work for users currently viewing the same wishlist
-- Basic error handling and validation implemented
-
-## Future Improvements
-
-- Email notifications for invitations
-- Push notifications for real-time updates
-- Advanced search and filtering
-- Product categories and tags
-- Social features (comments, reactions)
-- Mobile app development
-- Advanced security features 
