@@ -1,28 +1,18 @@
-# 🛍️ FlockShop - Collaborative Wishlist Application
+# FlockShop Shared Wishlist App
 
-FlockShop is a real-time collaborative product wishlist app where multiple users can create, manage, and interact with wishlists. Perfect for group shopping, event planning, or simply organizing your product desires together.
+A collaborative product wishlist application where multiple users can create, manage, and interact with wishlists in real-time.
 
----
+## Features
 
-## 📸 Preview
+- User authentication (JWT)
+- Create and manage wishlists
+- Add, edit, and remove products
+- Real-time collaboration using Socket.io
+- Invite others to join wishlists
+- Track who added/edited each item
+- Responsive design
 
-![Login Page](./relative/path/to/your/screenshot.png)
-
----
-
-## 🚀 Features
-
-- 🔐 User authentication (JWT)
-- 📋 Create and manage wishlists
-- ➕ Add, edit, and remove products
-- 💬 Real-time collaboration using Socket.io
-- 📧 Invite others to join wishlists
-- 👤 Track who added/edited each item
-- 📱 Fully responsive design
-
----
-
-## 🧰 Tech Stack
+## Tech Stack
 
 ### Backend
 - Node.js with Express
@@ -33,69 +23,89 @@ FlockShop is a real-time collaborative product wishlist app where multiple users
 
 ### Frontend
 - React with Vite
-- socket.io-client for live updates
-- React Router for routing
-- Axios for API communication
+- Socket.io-client for real-time updates
+- React Router for navigation
+- Axios for API calls
 
----
+## Setup Instructions
 
-## 🛠️ Setup Instructions
-
-### 🔍 Prerequisites
+### Prerequisites
 - Node.js (v14 or higher)
 - MongoDB (local or Atlas)
 
----
+### Backend Setup
+1. Navigate to the server directory:
+   ```bash
+   cd server
+   ```
 
-### 📦 Backend Setup
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-```bash
-cd server
-npm install
-Create a .env file in the server folder:
+3. Create a `.env` file in the server directory with:
+   ```
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret_key
+   PORT=5000
+   ```
 
-env
-Copy
-Edit
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key
-PORT=5000
-Start the backend:
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-bash
-Copy
-Edit
-npm run dev
-💻 Frontend Setup
-bash
-Copy
-Edit
-cd client
-npm install
-npm run dev
-📡 API Endpoints
-🔐 Authentication
-POST /api/auth/signup — Register
+### Frontend Setup
+1. Navigate to the client directory:
+   ```bash
+   cd client
+   ```
 
-POST /api/auth/login — Login
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-📁 Wishlists
-GET /api/wishlists — Get all wishlists
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-POST /api/wishlists — Create wishlist
+## API Endpoints
 
-GET /api/wishlists/:id — Get specific wishlist
+### Authentication
+- `POST /api/auth/signup` - User registration
+- `POST /api/auth/login` - User login
 
-PUT /api/wishlists/:id — Update wishlist
+### Wishlists
+- `GET /api/wishlists` - Get user's wishlists
+- `POST /api/wishlists` - Create new wishlist
+- `GET /api/wishlists/:id` - Get specific wishlist
+- `PUT /api/wishlists/:id` - Update wishlist
+- `DELETE /api/wishlists/:id` - Delete wishlist
 
-DELETE /api/wishlists/:id — Delete wishlist
+### Products
+- `POST /api/wishlists/:id/products` - Add product to wishlist
+- `PUT /api/wishlists/:id/products/:productId` - Update product
+- `DELETE /api/wishlists/:id/products/:productId` - Remove product
 
-🎁 Products
-POST /api/wishlists/:id/products — Add product
+### Invitations
+- `POST /api/wishlists/:id/invite` - Invite user to wishlist
 
-PUT /api/wishlists/:id/products/:productId — Update product
+## Assumptions and Limitations
 
-DELETE /api/wishlists/:id/products/:productId — Remove product
+- Authentication is implemented with JWT tokens
+- Email invitations are mocked (no actual emails sent)
+- Real-time updates work for users currently viewing the same wishlist
+- Basic error handling and validation implemented
 
-✉️ Invitations
-POST /api/wishlists/:id/invite — Invite user
+## Future Improvements
+
+- Email notifications for invitations
+- Push notifications for real-time updates
+- Advanced search and filtering
+- Product categories and tags
+- Social features (comments, reactions)
+- Mobile app development
+- Advanced security features 
