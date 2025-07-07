@@ -3,8 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import ConfirmDialog from './ConfirmDialog';
 import ErrorPopup from './ErrorPopup';
 import SuccessPopup from './SuccessPopup';
-import './WishlistDetail.css';
 import reactLogo from '../assets/react.svg';
+import './WishlistDetail.css';
 
 const WishlistDetail = ({ user, token, socket }) => {
   const { id } = useParams();
@@ -45,6 +45,7 @@ const WishlistDetail = ({ user, token, socket }) => {
   const [allUsers, setAllUsers] = useState([]);
   const [userSearch, setUserSearch] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [imageErrors, setImageErrors] = useState(new Set());
 
   useEffect(() => {
     fetchWishlist();
@@ -70,6 +71,7 @@ const WishlistDetail = ({ user, token, socket }) => {
         socket.off('comment-deleted');
         socket.off('reaction-added');
         socket.off('reaction-removed');
+        setImageErrors(new Set()); // Clear image errors on unmount
       };
     }
   }, [id, socket]);
@@ -123,6 +125,12 @@ const WishlistDetail = ({ user, token, socket }) => {
   const handleProductUpdated = (data) => {
     if (data.wishlistId === id) {
       setProducts(prev => prev.map(p => p._id === data.product._id ? data.product : p));
+      // Clear image error for updated product
+      setImageErrors(prev => {
+        const newErrors = new Set(prev);
+        newErrors.delete(data.product._id);
+        return newErrors;
+      });
     }
   };
 
@@ -538,56 +546,77 @@ const WishlistDetail = ({ user, token, socket }) => {
       </div>
 
       {showAddForm && (
-        <div className="modal-overlay">
-          <div className="modal add-product-modal">
-            <h2>Add Product</h2>
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Add Product</h3>
             <form onSubmit={handleAddProduct}>
-              <input
-                type="text"
-                placeholder="Product name"
-                value={addForm.name}
-                onChange={e => setAddForm({ ...addForm, name: e.target.value })}
-                required
-              />
-              <input
-                type="number"
-                placeholder="Price"
-                value={addForm.price}
-                onChange={e => setAddForm({ ...addForm, price: e.target.value })}
-                required
-              />
-              <input
-                type="text"
-                placeholder="Image URL (optional)"
-                value={addForm.imageUrl}
-                onChange={e => setAddForm({ ...addForm, imageUrl: e.target.value })}
-              />
-              <input
-                type="file"
-                accept="image/*"
-                onChange={async (e) => {
-                  const file = e.target.files[0];
-                  if (file) {
-                    const formData = new FormData();
-                    formData.append('image', file);
-                    try {
-                      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/upload`, {
-                        method: 'POST',
-                        body: formData,
-                        headers: { 'Authorization': `Bearer ${token}` }
-                      });
-                      const data = await res.json();
-                      if (res.ok && data.imageUrl) {
-                        setAddForm({ ...addForm, imageUrl: data.imageUrl });
-                      } else {
-                        alert(data.message || 'Image upload failed');
-                      }
-                    } catch {
-                      alert('Image upload failed');
-                    }
-                  }
-                }}
-              />
+              <div className="form-group">
+                <label>Product Name</label>
+                <input
+                  type="text"
+                  value={addForm.name}
+                  onChange={(e) => setAddForm({...addForm, name: e.target.value})}
+                  required
+                  placeholder="Enter product name"
+                />
+              </div>
+              <div className="form-group">
+                <label>Image URL</label>
+                <input
+                  type="url"
+                  value={addForm.imageUrl}
+                  onChange={(e) => setAddForm({...addForm, imageUrl: e.target.value})}
+                  required
+                  placeholder="Enter image URL"
+                />
+              </div>
+              <div className="form-group">
+                <label>Price</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={addForm.price}
+                  onChange={(e) => setAddForm({...addForm, price: e.target.value})}
+                  required
+                  placeholder="Enter price"
+                />
+              </div>
+              <div className="form-group">
+                <label>Category</label>
+                <input
+                  type="text"
+                  value={addForm.category}
+                  onChange={(e) => setAddForm({...addForm, category: e.target.value})}
+                  placeholder="Enter category"
+                />
+              </div>
+              <div className="form-group">
+                <label>Tags</label>
+                <div className="tags-input">
+                  <input
+                    type="text"
+                    value={newTag}
+                    onChange={(e) => setNewTag(e.target.value)}
+                    placeholder="Add a tag and press Enter"
+                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                  />
+                  <button type="button" onClick={addTag} className="add-tag-btn">+</button>
+                </div>
+                <div className="tags-display">
+                  {addForm.tags.map(tag => (
+                    <span key={tag} className="tag">
+                      {tag}
+                      <button 
+                        type="button" 
+                        onClick={() => removeTag(tag)}
+                        className="remove-tag-btn"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
               <div className="modal-actions">
                 <button type="submit" className="primary-button">Add Product</button>
                 <button 
@@ -669,26 +698,24 @@ const WishlistDetail = ({ user, token, socket }) => {
         ) : (
           filteredProducts.map(product => (
             <div key={product._id} className="product-card">
-              <img 
-                src={product.imageUrl} 
-                alt={product.name}
-                className="product-image"
-                onError={(e) => {
-                  if (e.target.src !== reactLogo) {
-                    e.target.onerror = null;
+              <div className="image-container">
+                <img 
+                  src={product.imageUrl} 
+                  alt={product.name}
+                  className="product-image"
+                  onError={(e) => {
+                    console.error(`Failed to load image for product: ${product.name}`);
+                    setImageErrors(prev => new Set(prev).add(product._id));
                     e.target.src = reactLogo;
-                  } else {
-                    e.target.style.display = 'none';
-                    const parent = e.target.parentNode;
-                    if (parent && !parent.querySelector('.img-error-msg')) {
-                      const msg = document.createElement('div');
-                      msg.className = 'img-error-msg';
-                      msg.textContent = 'Image not available';
-                      parent.appendChild(msg);
-                    }
-                  }
-                }}
-              />
+                    e.target.onerror = null; // Prevent infinite loop
+                  }}
+                />
+                {imageErrors.has(product._id) && (
+                  <div className="image-error-overlay" title="Original image failed to load">
+                    ⚠️
+                  </div>
+                )}
+              </div>
               <div className="product-info">
                 <h3>{product.name}</h3>
                 <p className="price">${product.price}</p>
