@@ -4,6 +4,7 @@ import ConfirmDialog from './ConfirmDialog';
 import ErrorPopup from './ErrorPopup';
 import SuccessPopup from './SuccessPopup';
 import './WishlistDetail.css';
+import reactLogo from '../assets/react.svg';
 
 const WishlistDetail = ({ user, token, socket }) => {
   const { id } = useParams();
@@ -537,77 +538,56 @@ const WishlistDetail = ({ user, token, socket }) => {
       </div>
 
       {showAddForm && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Add Product</h3>
+        <div className="modal-overlay">
+          <div className="modal add-product-modal">
+            <h2>Add Product</h2>
             <form onSubmit={handleAddProduct}>
-              <div className="form-group">
-                <label>Product Name</label>
-                <input
-                  type="text"
-                  value={addForm.name}
-                  onChange={(e) => setAddForm({...addForm, name: e.target.value})}
-                  required
-                  placeholder="Enter product name"
-                />
-              </div>
-              <div className="form-group">
-                <label>Image URL</label>
-                <input
-                  type="url"
-                  value={addForm.imageUrl}
-                  onChange={(e) => setAddForm({...addForm, imageUrl: e.target.value})}
-                  required
-                  placeholder="Enter image URL"
-                />
-              </div>
-              <div className="form-group">
-                <label>Price</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={addForm.price}
-                  onChange={(e) => setAddForm({...addForm, price: e.target.value})}
-                  required
-                  placeholder="Enter price"
-                />
-              </div>
-              <div className="form-group">
-                <label>Category</label>
-                <input
-                  type="text"
-                  value={addForm.category}
-                  onChange={(e) => setAddForm({...addForm, category: e.target.value})}
-                  placeholder="Enter category"
-                />
-              </div>
-              <div className="form-group">
-                <label>Tags</label>
-                <div className="tags-input">
-                  <input
-                    type="text"
-                    value={newTag}
-                    onChange={(e) => setNewTag(e.target.value)}
-                    placeholder="Add a tag and press Enter"
-                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                  />
-                  <button type="button" onClick={addTag} className="add-tag-btn">+</button>
-                </div>
-                <div className="tags-display">
-                  {addForm.tags.map(tag => (
-                    <span key={tag} className="tag">
-                      {tag}
-                      <button 
-                        type="button" 
-                        onClick={() => removeTag(tag)}
-                        className="remove-tag-btn"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              </div>
+              <input
+                type="text"
+                placeholder="Product name"
+                value={addForm.name}
+                onChange={e => setAddForm({ ...addForm, name: e.target.value })}
+                required
+              />
+              <input
+                type="number"
+                placeholder="Price"
+                value={addForm.price}
+                onChange={e => setAddForm({ ...addForm, price: e.target.value })}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Image URL (optional)"
+                value={addForm.imageUrl}
+                onChange={e => setAddForm({ ...addForm, imageUrl: e.target.value })}
+              />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={async (e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    try {
+                      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/upload`, {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'Authorization': `Bearer ${token}` }
+                      });
+                      const data = await res.json();
+                      if (res.ok && data.imageUrl) {
+                        setAddForm({ ...addForm, imageUrl: data.imageUrl });
+                      } else {
+                        alert(data.message || 'Image upload failed');
+                      }
+                    } catch {
+                      alert('Image upload failed');
+                    }
+                  }
+                }}
+              />
               <div className="modal-actions">
                 <button type="submit" className="primary-button">Add Product</button>
                 <button 
@@ -694,7 +674,19 @@ const WishlistDetail = ({ user, token, socket }) => {
                 alt={product.name}
                 className="product-image"
                 onError={(e) => {
-                  e.target.src = 'https://via.placeholder.com/200x200?text=No+Image';
+                  if (e.target.src !== reactLogo) {
+                    e.target.onerror = null;
+                    e.target.src = reactLogo;
+                  } else {
+                    e.target.style.display = 'none';
+                    const parent = e.target.parentNode;
+                    if (parent && !parent.querySelector('.img-error-msg')) {
+                      const msg = document.createElement('div');
+                      msg.className = 'img-error-msg';
+                      msg.textContent = 'Image not available';
+                      parent.appendChild(msg);
+                    }
+                  }
                 }}
               />
               <div className="product-info">

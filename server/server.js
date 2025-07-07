@@ -4,6 +4,7 @@ const cors = require('cors');
 const http = require('http');
 const socketIo = require('socket.io');
 require('dotenv').config();
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
@@ -30,6 +31,7 @@ const wishlistRoutes = require('./routes/wishlists');
 const templateRoutes = require('./routes/templates');
 const invitationRoutes = require('./routes/invitations');
 const userRoutes = require('./routes/users');
+const uploadRoute = require('./routes/upload');
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -37,6 +39,8 @@ app.use('/api/wishlists', wishlistRoutes);
 app.use('/api/templates', templateRoutes);
 app.use('/api/invitations', invitationRoutes);
 app.use('/api/users', userRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api/upload', uploadRoute);
 
 // Socket.io connection handling
 io.on('connection', (socket) => {
